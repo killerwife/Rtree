@@ -33,6 +33,12 @@
     <ClInclude Include="point.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NodeFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicNodeFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="rtree.cpp">
@@ -51,6 +57,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="point.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BasicNodeFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

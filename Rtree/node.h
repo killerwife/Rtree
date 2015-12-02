@@ -9,16 +9,20 @@ class Node
 {
 protected:
     char isLeaf;
-    long size;
+    long size; 
+    int count;
 public:
     MBR rectangle;
     MBR* arrayOfChildren;
-    long* arrayOfPointers;
+    long* arrayOfPositions;
     Node();
     Node(long _blockSize,MBR input);
     virtual ~Node();
     virtual void readFromFile(long position,FILE* file);
     virtual void saveToFile(long position,FILE* file);    
     std::string toString();
+    void makeLeaf();
+    int getCount();
+    int addChild(Node* _node);
 };
 

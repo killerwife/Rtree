@@ -69,3 +69,8 @@ bool MBR::isInside(MBR input)
     }
     return true;
 }
+
+long MBR::distance(MBR input)
+{
+
+}

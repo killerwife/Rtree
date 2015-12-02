@@ -77,18 +77,22 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BasicNodeFactory.h" />
     <ClInclude Include="MBR.h" />
     <ClInclude Include="node.h" />
+    <ClInclude Include="NodeFactory.h" />
     <ClInclude Include="point.h" />
     <ClInclude Include="rtree.h" />
     <ClInclude Include="testingNode.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BasicNodeFactory.cpp" />
     <ClCompile Include="main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="MBR.cpp" />
     <ClCompile Include="node.cpp" />
+    <ClCompile Include="NodeFactory.cpp" />
     <ClCompile Include="point.cpp" />
     <ClCompile Include="rtree.cpp" />
     <ClCompile Include="testingNode.cpp" />

@@ -11,16 +11,16 @@ Node::Node(long _blockSize, MBR input)
     size = _blockSize / sizeof(Node);
     rectangle.topLeft = input.topLeft;
     rectangle.bottomRight = input.bottomRight;
-    isLeaf = 1;
-    arrayOfChildren = new MBR[size];
-    arrayOfPointers = new long[size];
-    memset(arrayOfPointers, -1, sizeof(long)*size);
+    isLeaf = 0;
+    arrayOfChildren = new MBR[size+1];
+    arrayOfPositions = new long[size + 1];
+    memset(arrayOfPositions, -1, sizeof(long)*size);
 }
 
 Node::~Node()
 {
     delete[] arrayOfChildren;
-    delete[] arrayOfPointers;
+    delete[] arrayOfPositions;
 }
 
 void Node::readFromFile(long position, FILE* file)
@@ -39,7 +39,7 @@ void Node::readFromFile(long position, FILE* file)
         memcpy(arrayOfChildren[i].bottomRight.points, byteArray + startIndex + pointSize, pointSize);
         startIndex += MBRSize;
     }
-    memcpy(arrayOfPointers, byteArray + startIndex, sizeof(double)*size);
+    memcpy(arrayOfPositions, byteArray + startIndex, sizeof(double)*size);
     delete[]byteArray;
 }
 void Node::saveToFile(long position, FILE* file)
@@ -57,7 +57,7 @@ void Node::saveToFile(long position, FILE* file)
         memcpy(arrayOfChildren[i].bottomRight.points, byteArray + startIndex + pointSize, pointSize);
         startIndex += MBRSize;
     }
-    memcpy(byteArray + startIndex, arrayOfPointers, sizeof(double)*size);
+    memcpy(byteArray + startIndex, arrayOfPositions, sizeof(double)*size);
     fwrite(byteArray, 1, outputSize, file);
     delete[]byteArray;
 }
@@ -68,7 +68,7 @@ std::string Node::toString()
     output += "Non-Leaf NOP:" + rectangle.toString();
     for (int i = 0; i < size; i++)
     {
-        if (arrayOfPointers[i] != -1)
+        if (arrayOfPositions[i] != -1)
         {
             output += "#" + std::to_string(i) + " Position: " + std::to_string(arrayOfPointers[i]) + " NOP:" + arrayOfChildren[i].toString();
         }
@@ -78,4 +78,19 @@ std::string Node::toString()
         }
     }
     return output;
+}
+
+void Node::makeLeaf()
+{
+    isLeaf = 1;
+}
+
+int Node::getCount()
+{
+    return count;
+}
+
+int Node::addChild(Node* _node)
+{
+    arrayOfPointers[count] = _node;
 }

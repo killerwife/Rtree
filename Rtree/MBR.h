@@ -9,6 +9,7 @@ public:
     Point bottomRight;
     std::string toString();
     long perimeter();
+    long distance(MBR input);
     bool isInside(MBR input);
     MBR();
     MBR(Point _topLeft,Point _bottomRight);

@@ -4,18 +4,15 @@
 Rtree::Rtree()
 {
     fileName = "tempOutput.txt";
-    treeFile = "tempTree.txt";
-    tree = fopen(treeFile.data(),"w+");
-    data = fopen(fileName.data(), "w+");
+    tree = fopen(fileName.data(), "w+");
     root = -1;
 }
 
-Rtree::Rtree(std::string _fileName, std::string _treeFile)
+Rtree::Rtree(std::string _fileName, NodeFactory* _factory)
 {
     fileName = _fileName;
-    treeFile = _treeFile;
-    tree = fopen(treeFile.data(), "w+");
-    data = fopen(fileName.data(), "w+");
+    tree = fopen(fileName.data(), "w+");
+    factory = _factory;
     long checkPos = fseek(tree,0,SEEK_END);
     if (checkPos == 0)
     {
@@ -30,10 +27,22 @@ Rtree::Rtree(std::string _fileName, std::string _treeFile)
 Rtree::~Rtree()
 {
     fclose(tree);
+    delete factory;
 }
 
 int Rtree::insertNode(Node* input)
 {
+    Node* temp;
+    if (root == -1)
+    {
+        temp = factory->getLeafNode();
+        temp->arrayOfChildren[]
+    }
+    else
+    {
+        temp = factory->getBasicNode();
+        temp->readFromFile(root,tree);
+    }
     return 1;
 }
 int Rtree::deleteNode(Node* input)
