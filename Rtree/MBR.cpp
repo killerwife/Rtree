@@ -6,6 +6,12 @@ MBR::MBR()
 
 }
 
+MBR::MBR(char* byteArray, int* position)
+{
+    topLeft = Point(byteArray, position);
+    bottomRight = Point(byteArray, position);
+}
+
 MBR::MBR(Point _topLeft, Point _bottomRight)
 {
     topLeft = _topLeft;
@@ -72,5 +78,21 @@ bool MBR::isInside(MBR input)
 
 long MBR::distance(MBR input)
 {
+    
+}
 
+bool MBR::operator==(const MBR& other)
+{
+    return topLeft == other.topLeft&&bottomRight == other.bottomRight;
+}
+
+long MBR::getSize()
+{
+    return topLeft.getSize() * 2;
+}
+
+void MBR::toByteArray(char* byteArray, int* position)
+{
+    topLeft.toByteArray(byteArray, position);
+    bottomRight.toByteArray(byteArray, position);
 }

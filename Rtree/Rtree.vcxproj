@@ -77,16 +77,21 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BasicDataFactory.h" />
     <ClInclude Include="BasicNodeFactory.h" />
+    <ClInclude Include="Data.h" />
+    <ClInclude Include="DataFactory.h" />
     <ClInclude Include="MBR.h" />
     <ClInclude Include="node.h" />
     <ClInclude Include="NodeFactory.h" />
     <ClInclude Include="point.h" />
     <ClInclude Include="rtree.h" />
-    <ClInclude Include="testingNode.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BasicDataFactory.cpp" />
     <ClCompile Include="BasicNodeFactory.cpp" />
+    <ClCompile Include="Data.cpp" />
+    <ClCompile Include="DataFactory.cpp" />
     <ClCompile Include="main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -95,7 +100,6 @@
     <ClCompile Include="NodeFactory.cpp" />
     <ClCompile Include="point.cpp" />
     <ClCompile Include="rtree.cpp" />
-    <ClCompile Include="testingNode.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

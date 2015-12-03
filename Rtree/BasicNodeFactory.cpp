@@ -20,3 +20,11 @@ Node* BasicNodeFactory::getLeafNode()
     temp->makeLeaf();
     return temp;
 }
+
+Node* BasicNodeFactory::getNode(char* byteArray, int* position)
+{
+    DataFactory* factory = new BasicDataFactory();
+    Node* temp = new Node(byteArray,position,factory);
+    
+    return temp;
+}

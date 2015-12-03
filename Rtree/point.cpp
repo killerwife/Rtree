@@ -7,6 +7,15 @@ Point::Point()
     points[0] = 0;
 }
 
+Point::Point(char* byteArray, int* position)
+{
+    memcpy(&dimension, byteArray + *position, sizeof(double));
+    *position += sizeof(double);
+    points = new double[dimension];
+    memcpy(points, byteArray + *position, sizeof(double)*dimension);
+    *position += sizeof(double)*dimension;    
+}
+
 Point::Point(double *coordinates,int _dimension)
 {
     dimension = _dimension;
@@ -41,4 +50,32 @@ Point& Point::operator=(const Point& other)
         points[i] = other.points[i];
     }
     return *this;
+}
+
+bool Point::operator==(const Point& other)
+{
+    for (int i = 0; i < dimension; i++)
+    {
+        if (points[i] != other.points[i])
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+}
+
+long Point::getSize()
+{
+    return sizeof(double)*dimension + sizeof(int);
+}
+
+void Point::toByteArray(char* byteArray, int* position)
+{
+    memcpy(byteArray + *position, &dimension, sizeof(double));
+    *position += sizeof(double);
+    memcpy(byteArray+*position,points,sizeof(double)*dimension);
+    *position += sizeof(double)*dimension;    
 }

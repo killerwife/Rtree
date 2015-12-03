@@ -36,7 +36,7 @@ int Rtree::insertNode(Node* input)
     if (root == -1)
     {
         temp = factory->getLeafNode();
-        temp->arrayOfChildren[]
+        temp->arra[]
     }
     else
     {
