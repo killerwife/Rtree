@@ -9,6 +9,6 @@ public:
     ~BasicNodeFactory();
     virtual Node *getBasicNode()override;
     virtual Node *getLeafNode()override;
-    virtual Node *getNode(char* byteArray, int* position)override;
+    virtual Node *getNode(FILE* treeFile, long position, long blockSize) override;
 };
 

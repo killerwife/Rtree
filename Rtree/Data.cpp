@@ -16,10 +16,10 @@ Data::~Data()
 
 long Data::getSize()
 {
-    return rectangle.getSize() + 20 * sizeof(char);
+    return sizeof(double)*6+sizeof(int) + 20 * sizeof(char);
 }
 
-void Data::toByteArray(char* byteArray, int *position)
+void Data::toByteArray(char* byteArray, long *position)
 {
     rectangle.toByteArray(byteArray, position);
     int i;
@@ -33,14 +33,6 @@ void Data::toByteArray(char* byteArray, int *position)
         byteArray[*position] = '\0';
         *position++;
     }
-}
-
-long Data::getMBRSize()
-{
-    double points[3] = {1,2,3};
-    double points2[3] = {3,4,5};
-    MBR temp(Point(points,3),Point(points2,3));
-    return temp.getSize();
 }
 
 bool Data::operator==(Data* other)

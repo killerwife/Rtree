@@ -10,12 +10,13 @@ BasicDataFactory::~BasicDataFactory()
 {
 }
 
-Data* BasicDataFactory::getData(char* byteArray, int* position)
+Data* BasicDataFactory::getData(char* byteArray, long* position)
 {
     return new Data(byteArray,position);
 }
 
-long BasicDataFactory::getMBRSize()
+long BasicDataFactory::getDataSize()
 {
-    return Data().getMBRSize();
+    Data temp;
+    return temp.getSize();
 }

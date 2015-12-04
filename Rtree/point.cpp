@@ -7,10 +7,9 @@ Point::Point()
     points[0] = 0;
 }
 
-Point::Point(char* byteArray, int* position)
+Point::Point(char* byteArray, long* position, int _dimension)
 {
-    memcpy(&dimension, byteArray + *position, sizeof(double));
-    *position += sizeof(double);
+    dimension = _dimension;
     points = new double[dimension];
     memcpy(points, byteArray + *position, sizeof(double)*dimension);
     *position += sizeof(double)*dimension;    
@@ -67,15 +66,35 @@ bool Point::operator==(const Point& other)
     }
 }
 
+Point Point::smaller(const Point& other)
+{
+    double *tempPoints = new double[dimension];
+    Point temp(tempPoints,dimension);
+    for (int i = 0; i < dimension; i++)
+    {
+        tempPoints[i] = std::min(points[i], other.points[i]);
+    }
+    return temp;
+}
+
+Point Point::bigger(const Point& other)
+{
+    double *tempPoints = new double[dimension];
+    Point temp(tempPoints, dimension);
+    for (int i = 0; i < dimension; i++)
+    {
+        tempPoints[i] = std::max(points[i], other.points[i]);
+    }
+    return temp;
+}
+
 long Point::getSize()
 {
     return sizeof(double)*dimension + sizeof(int);
 }
 
-void Point::toByteArray(char* byteArray, int* position)
+void Point::toByteArray(char* byteArray, long* position)
 {
-    memcpy(byteArray + *position, &dimension, sizeof(double));
-    *position += sizeof(double);
     memcpy(byteArray+*position,points,sizeof(double)*dimension);
     *position += sizeof(double)*dimension;    
 }

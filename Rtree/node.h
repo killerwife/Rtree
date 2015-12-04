@@ -2,19 +2,17 @@
 #include <string.h>
 #include <string>
 #include <math.h>
-#include "MBR.h"
 #include "DataFactory.h"
 #pragma once
-
 class Node
 {
-protected:
-    char isLeaf;
+protected:    
     long size;
     int count;
     long blockSize;
     long totalSize;
 public:
+    char isLeaf;
     long parent;    
     MBR rectangle;
     MBR* arrayOfChildren;
@@ -23,7 +21,7 @@ public:
     DataFactory* factory;
     Node();
     Node(long _blockSize, MBR input, long _parent, DataFactory* _factory);
-    Node(char* byteArray, int* position, DataFactory* _factory);
+    Node(long _blockSize, char* byteArray, long* position, DataFactory* _factory);
     virtual ~Node();
     virtual void readFromFile(long position, FILE* file);
     virtual void saveToFile(long position, FILE* file);

@@ -21,10 +21,13 @@ Node* BasicNodeFactory::getLeafNode()
     return temp;
 }
 
-Node* BasicNodeFactory::getNode(char* byteArray, int* position)
+Node* BasicNodeFactory::getNode(FILE* treeFile, long position,long blockSize)
 {
     DataFactory* factory = new BasicDataFactory();
-    Node* temp = new Node(byteArray,position,factory);
-    
+    char* byteArray = new char[blockSize];
+    long pos = position;
+    fread(byteArray,blockSize,1,treeFile);
+    Node* temp = new Node(blockSize,byteArray,&pos,factory);
+    delete[]byteArray;
     return temp;
 }

@@ -6,22 +6,25 @@ MBR::MBR()
 
 }
 
-MBR::MBR(char* byteArray, int* position)
+MBR::MBR(char* byteArray, long* position)
 {
-    topLeft = Point(byteArray, position);
-    bottomRight = Point(byteArray, position);
+    int dimension;
+    memcpy(&dimension, byteArray + *position, sizeof(int));
+    *position += sizeof(int);
+    bottomLeft = Point(byteArray, position, dimension);
+    topRight = Point(byteArray, position,dimension);
 }
 
-MBR::MBR(Point _topLeft, Point _bottomRight)
+MBR::MBR(Point _bottomLeft, Point _topRight)
 {
-    topLeft = _topLeft;
-    bottomRight = _bottomRight;
+    bottomLeft = _bottomLeft;
+    topRight = _topRight;
 }
 
 MBR::MBR(const MBR& other)
 {
-    topLeft = other.topLeft;
-    bottomRight = other.bottomRight;
+    bottomLeft = other.bottomLeft;
+    topRight = other.topRight;
 }
 
 MBR::~MBR()
@@ -30,45 +33,45 @@ MBR::~MBR()
 
 MBR& MBR::operator=(const MBR& other)
 {
-    topLeft = other.topLeft;
-    bottomRight = other.bottomRight;
+    bottomLeft = other.bottomLeft;
+    topRight = other.topRight;
     return *this;
 }
 
 std::string MBR::toString(){
     std::string output;
     output += "Top Left: ";
-    for (int i = 0; i < topLeft.dimension; i++)
+    for (int i = 0; i < bottomLeft.dimension; i++)
     {
-        output += "x" + std::to_string(i) + ":" + std::to_string(topLeft.points[i]) + " ";
+        output += "x" + std::to_string(i) + ":" + std::to_string(bottomLeft.points[i]) + " ";
     }
     output += "\n";
     output += "Bottom Right: ";
-    for (int i = 0; i < topLeft.dimension; i++)
+    for (int i = 0; i < bottomLeft.dimension; i++)
     {
-        output += "x" + std::to_string(i) + ":" + std::to_string(bottomRight.points[i]) + " ";
+        output += "x" + std::to_string(i) + ":" + std::to_string(topRight.points[i]) + " ";
     }
     output += "\n";
     return output;
 }
-long MBR::perimeter()
+double MBR::perimeter()
 {
-    long output = 0;
-    long power = pow(2,topLeft.dimension-1);
-    for (int i = 0; i < topLeft.dimension;i++)
+    double output = 0;
+    double power = pow(2,topRight.dimension);
+    for (int i = 0; i < bottomLeft.dimension; i++)
     {
-        output += abs(topLeft.points[i] - bottomRight.points[i]);
+        output += (topRight.points[i]-bottomLeft.points[i])*power;
     }
     return output;
 }
 bool MBR::isInside(MBR input)
 {
-    for (int i = 0; i < topLeft.dimension; i++)
+    for (int i = 0; i < bottomLeft.dimension; i++)
     {
-        if (!((topLeft.points[i]<input.topLeft.points[i] && bottomRight.points[i]>input.topLeft.points[i]) ||
-            (topLeft.points[i]<input.bottomRight.points[i] && bottomRight.points[i]>input.bottomRight.points[i]) ||
-            (topLeft.points[i]<input.bottomRight.points[i] && topLeft.points[i]>input.topLeft.points[i]) ||
-            (bottomRight.points[i]<input.bottomRight.points[i] && bottomRight.points[i]>input.topLeft.points[i])))
+        if (!((bottomLeft.points[i]<input.bottomLeft.points[i] && topRight.points[i]>input.bottomLeft.points[i]) ||
+            (bottomLeft.points[i]<input.topRight.points[i] && topRight.points[i]>input.topRight.points[i]) ||
+            (bottomLeft.points[i]<input.topRight.points[i] && bottomLeft.points[i]>input.bottomLeft.points[i]) ||
+            (topRight.points[i]<input.topRight.points[i] && topRight.points[i]>input.bottomLeft.points[i])))
         {
             return false;
         }
@@ -83,16 +86,26 @@ long MBR::distance(MBR input)
 
 bool MBR::operator==(const MBR& other)
 {
-    return topLeft == other.topLeft&&bottomRight == other.bottomRight;
+    return bottomLeft == other.bottomLeft&&topRight == other.topRight;
+}
+
+MBR MBR::operator+(const MBR& other)
+{
+    MBR temp;
+    Point tempBot = bottomLeft.smaller(other.bottomLeft);
+    Point tempTop = topRight.smaller(other.topRight);
+    return temp;
 }
 
 long MBR::getSize()
 {
-    return topLeft.getSize() * 2;
+    return bottomLeft.getSize()*2 +sizeof(int);
 }
 
-void MBR::toByteArray(char* byteArray, int* position)
+void MBR::toByteArray(char* byteArray, long* position)
 {
-    topLeft.toByteArray(byteArray, position);
-    bottomRight.toByteArray(byteArray, position);
+    memcpy(byteArray+*position,&bottomLeft.dimension,sizeof(int));
+    *position += sizeof(int);
+    bottomLeft.toByteArray(byteArray, position);
+    topRight.toByteArray(byteArray, position);
 }

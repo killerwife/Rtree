@@ -9,8 +9,7 @@ public:
     Data(char* byteArray,int* position);
     ~Data();
     long getSize();
-    virtual void toByteArray(char* byteArray, int* position);
+    virtual void toByteArray(char* byteArray, long* position);
     virtual bool operator==(Data* other);
-    long getMBRSize();
 };
 

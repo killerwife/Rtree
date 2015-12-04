@@ -1,35 +1,49 @@
-﻿Build started 01.12.2015 22:12:29.
+﻿Build started 04.12.2015 22:48:39.
      1>Project "E:\Users\killerwife\C++ Source\Rtree\Rtree\Rtree.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt MBR.cpp main.cpp node.cpp point.cpp rtree.cpp testingNode.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt BasicDataFactory.cpp BasicNodeFactory.cpp Data.cpp DataFactory.cpp main.cpp MBR.cpp node.cpp NodeFactory.cpp point.cpp rtree.cpp
          rtree.cpp
-     1>e:\users\killerwife\c++ source\rtree\rtree\rtree.cpp(8): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\stdio.h(211) : see declaration of 'fopen'
-     1>e:\users\killerwife\c++ source\rtree\rtree\rtree.cpp(9): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\stdio.h(211) : see declaration of 'fopen'
-     1>e:\users\killerwife\c++ source\rtree\rtree\rtree.cpp(17): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\stdio.h(211) : see declaration of 'fopen'
-     1>e:\users\killerwife\c++ source\rtree\rtree\rtree.cpp(18): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\stdio.h(211) : see declaration of 'fopen'
+     1>e:\users\killerwife\c++ source\rtree\rtree\mbr.h(21): error C2804: binary 'operator +' has too many parameters
          point.cpp
+         NodeFactory.cpp
+     1>e:\users\killerwife\c++ source\rtree\rtree\mbr.h(21): error C2804: binary 'operator +' has too many parameters
          node.cpp
+     1>e:\users\killerwife\c++ source\rtree\rtree\mbr.h(21): error C2804: binary 'operator +' has too many parameters
          MBR.cpp
-     1>e:\users\killerwife\c++ source\rtree\rtree\mbr.cpp(51): warning C4244: 'initializing' : conversion from 'double' to 'long', possible loss of data
-     1>e:\users\killerwife\c++ source\rtree\rtree\mbr.cpp(54): warning C4244: '+=' : conversion from 'double' to 'long', possible loss of data
+     1>e:\users\killerwife\c++ source\rtree\rtree\mbr.h(21): error C2804: binary 'operator +' has too many parameters
+     1>e:\users\killerwife\c++ source\rtree\rtree\mbr.cpp(10): error C2511: 'MBR::MBR(char *,int *)' : overloaded member function not found in 'MBR'
+                 e:\users\killerwife\c++ source\rtree\rtree\mbr.h(6) : see declaration of 'MBR'
+     1>e:\users\killerwife\c++ source\rtree\rtree\mbr.cpp(14): error C2665: 'Point::Point' : none of the 4 overloads could convert all the argument types
+                 e:\users\killerwife\c++ source\rtree\rtree\point.h(9): could be 'Point::Point(char *,long *,int)'
+                 while trying to match the argument list '(char *, int *, int)'
+     1>e:\users\killerwife\c++ source\rtree\rtree\mbr.cpp(15): error C2665: 'Point::Point' : none of the 4 overloads could convert all the argument types
+                 e:\users\killerwife\c++ source\rtree\rtree\point.h(9): could be 'Point::Point(char *,long *,int)'
+                 while trying to match the argument list '(char *, int *, int)'
+     1>e:\users\killerwife\c++ source\rtree\rtree\mbr.cpp(92): error C2511: 'MBR MBR::operator +(MBR,MBR)' : overloaded member function not found in 'MBR'
+                 e:\users\killerwife\c++ source\rtree\rtree\mbr.h(6) : see declaration of 'MBR'
+         DataFactory.cpp
+     1>e:\users\killerwife\c++ source\rtree\rtree\mbr.h(21): error C2804: binary 'operator +' has too many parameters
+         Data.cpp
+     1>e:\users\killerwife\c++ source\rtree\rtree\mbr.h(21): error C2804: binary 'operator +' has too many parameters
+     1>e:\users\killerwife\c++ source\rtree\rtree\data.cpp(10): error C2665: 'MBR::MBR' : none of the 4 overloads could convert all the argument types
+                 e:\users\killerwife\c++ source\rtree\rtree\mbr.h(16): could be 'MBR::MBR(Point,Point)'
+                 e:\users\killerwife\c++ source\rtree\rtree\mbr.h(15): or       'MBR::MBR(char *,long *)'
+                 while trying to match the argument list '(char *, int *)'
+     1>e:\users\killerwife\c++ source\rtree\rtree\data.cpp(26): warning C4018: '<' : signed/unsigned mismatch
+         BasicNodeFactory.cpp
+     1>e:\users\killerwife\c++ source\rtree\rtree\mbr.h(21): error C2804: binary 'operator +' has too many parameters
+         BasicDataFactory.cpp
+     1>e:\users\killerwife\c++ source\rtree\rtree\mbr.h(21): error C2804: binary 'operator +' has too many parameters
+     1>e:\users\killerwife\c++ source\rtree\rtree\basicdatafactory.cpp(15): error C2664: 'Data::Data(const Data &)' : cannot convert argument 2 from 'long *' to 'int *'
+                 Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
          Generating Code...
-         Skipping... (no relevant changes detected)
-         testingNode.cpp
+     1>e:\users\killerwife\c++ source\rtree\rtree\point.cpp(67): warning C4715: 'Point::operator==' : not all control paths return a value
+         Compiling...
          main.cpp
-       Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\Users\killerwife\C++ Source\Rtree\Debug\Rtree.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"E:\Users\killerwife\C++ Source\Rtree\Debug\Rtree.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\Users\killerwife\C++ Source\Rtree\Debug\Rtree.lib" /MACHINE:X86 Debug\main.obj
-         Debug\MBR.obj
-         Debug\node.obj
-         Debug\point.obj
-         Debug\rtree.obj
-         Debug\testingNode.obj
-         Rtree.vcxproj -> E:\Users\killerwife\C++ Source\Rtree\Debug\Rtree.exe
-     1>Done Building Project "E:\Users\killerwife\C++ Source\Rtree\Rtree\Rtree.vcxproj" (Build target(s)).
+     1>e:\users\killerwife\c++ source\rtree\rtree\mbr.h(21): error C2804: binary 'operator +' has too many parameters
+         Generating Code...
+     1>Done Building Project "E:\Users\killerwife\C++ Source\Rtree\Rtree\Rtree.vcxproj" (Build target(s)) -- FAILED.
 
-Build succeeded.
+Build FAILED.
 
-Time Elapsed 00:00:01.45
+Time Elapsed 00:00:02.84

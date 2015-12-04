@@ -8,6 +8,6 @@ public:
     ~NodeFactory();
     virtual Node *getBasicNode() = 0;
     virtual Node *getLeafNode() = 0;
-    virtual Node *getNode(char* byteArray, int* position) = 0;
+    virtual Node *getNode(FILE* treeFile, long position, long blockSize) = 0;
 };
 

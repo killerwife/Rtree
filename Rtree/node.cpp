@@ -6,31 +6,44 @@ Node::Node()
 
 }
 
-Node::Node(long _blockSize, MBR input,long _parent,DataFactory* _factory)
+Node::Node(long _blockSize, MBR input, long _parent, DataFactory* _factory)
 {
     blockSize = _blockSize;
-    size = (_blockSize -sizeof(long) -sizeof(char))/(sizeof(long)+input.getSize());
+    size = (_blockSize - sizeof(long) - sizeof(char)) / (sizeof(long) + input.getSize());
     parent = _parent;
     factory = _factory;
-    rectangle.topLeft = input.topLeft;
-    rectangle.bottomRight = input.bottomRight;
+    rectangle = input;
     isLeaf = 0;
     count = 0;
-    arrayOfChildren = new MBR[size+1];
+    arrayOfChildren = new MBR[size + 1];
     arrayOfPositions = new long[size + 1];
     memset(arrayOfPositions, -1, sizeof(long)*size);
 }
 
-Node(long _blockSize,char* byteArray, int* position, DataFactory* _factory)
+Node::Node(long _blockSize, char* byteArray, long* position, DataFactory* _factory)
 {
     isLeaf = byteArray[0];
     *position++;
     memcpy(&parent, byteArray + *position, sizeof(long));
     *position += 4;
+    rectangle = MBR(byteArray, position);
     if (isLeaf == 0)
-    {
-        size = (_blockSize - sizeof(long) - sizeof(char)) / (sizeof(long) + _factory.getMBRSize());
+    {        
+        size = (_blockSize - sizeof(long) - sizeof(char)) / (sizeof(long) + rectangle.getSize());
+        arrayOfChildren = new MBR[size + 1];
+        for (int i = 0; i < size; i++)
+        {
+            arrayOfChildren[i]=MBR(byteArray,position);
+        }
         memcpy(arrayOfPositions, byteArray + *position, sizeof(double)*size);
+    }
+    else
+    {
+        size = (_blockSize - sizeof(long) - sizeof(char)) / (_factory->getDataSize());
+        for (int i = 0; i < size; i++)
+        {
+            data[i] = _factory->getData(byteArray, position);
+        }
     }
 }
 
@@ -38,47 +51,64 @@ Node::~Node()
 {
     delete[] arrayOfChildren;
     delete[] arrayOfPositions;
+    delete[] data;
 }
 
 void Node::readFromFile(long position, FILE* file)
 {
-    fseek(file, position, SEEK_SET);
-    int pointSize = rectangle.topLeft.dimension*sizeof(double);
-    int MBRSize = 2 * pointSize;
-    int inputSize = sizeof(char) + sizeof(long)*size + MBRSize*size;
-    char* byteArray = new char[inputSize];
-    fread(byteArray, 1, inputSize, file);
-    isLeaf = byteArray[0];
-    memcpy(&parent, byteArray + sizeof(char), sizeof(long));
-    int startIndex = sizeof(char)+sizeof(long);
-    for (int i = 0; i < size; i++)
+    if (isLeaf == 0)
     {
-        memcpy(arrayOfChildren[i].topLeft.points,byteArray+startIndex,pointSize);
-        memcpy(arrayOfChildren[i].bottomRight.points, byteArray + startIndex + pointSize, pointSize);
-        startIndex += MBRSize;
+        delete[] arrayOfChildren;
+        delete[] arrayOfPositions;
     }
-    
-    delete[]byteArray;
+    else
+    {
+        delete[]data;
+    }
+    fseek(file, position, SEEK_SET);
+    long pos=position;
+    char* byteArray = new char[blockSize];
+    fread(byteArray, blockSize, 1, file);
+    isLeaf = byteArray[0];
+    pos++;
+    memcpy(&parent, byteArray + pos, sizeof(long));
+    pos += 4;
+    rectangle = MBR(byteArray, &pos);
+    if (isLeaf == 0)
+    {
+        size = (blockSize - sizeof(long) - sizeof(char)) / (sizeof(long) + rectangle.getSize());
+        arrayOfChildren = new MBR[size + 1];
+        arrayOfPositions = new long[size + 1];
+        for (int i = 0; i < size; i++)
+        {
+            arrayOfChildren[i] = MBR(byteArray, &pos);
+        }
+        memcpy(arrayOfPositions, byteArray + pos, sizeof(double)*size);
+    }
+    else
+    {
+        size = (blockSize - sizeof(long) - sizeof(char)) / (factory->getDataSize());
+        for (int i = 0; i < size; i++)
+        {
+            data[i] = factory->getData(byteArray, &pos);
+        }
+    }
 }
+
 void Node::saveToFile(long position, FILE* file)
 {
     fseek(file, position, SEEK_SET);
-    int pointSize = rectangle.topLeft.dimension*sizeof(double);
-    int MBRSize = 2 * pointSize;
-    int outputSize = sizeof(char) + sizeof(long)*size + MBRSize*size;
     char* byteArray = new char[blockSize];
-    byteArray[0] = isLeaf;   
+    byteArray[0] = isLeaf;
     memcpy(byteArray + sizeof(char), &parent, sizeof(long));
-    int startIndex = sizeof(char) + sizeof(long);
-    for (int i = 0; i < size; i++)
-    {
-        memcpy(arrayOfChildren[i].topLeft.points, byteArray + startIndex, pointSize);
-        memcpy(arrayOfChildren[i].bottomRight.points, byteArray + startIndex + pointSize, pointSize);
-        startIndex += MBRSize;
-    }
+    long startIndex = sizeof(char) + sizeof(long);
     if (isLeaf == 0)
     {
-        memcpy(byteArray + startIndex, arrayOfPositions, sizeof(double)*size);
+        for (int i = 0; i < size; i++)
+        {
+            arrayOfChildren->toByteArray(byteArray,&startIndex);
+        }
+        memcpy(byteArray + startIndex, arrayOfPositions, sizeof(long)*size);
     }
     else
     {
@@ -86,10 +116,10 @@ void Node::saveToFile(long position, FILE* file)
         {
             if (data[i] == nullptr)
             {
-                i--;
+                count++;
                 continue;
             }
-            data[i]->toByteArray(byteArray,&startIndex);
+            data[i]->toByteArray(byteArray, &startIndex);
             startIndex += data[i]->getSize();
         }
     }
@@ -118,8 +148,8 @@ std::string Node::toString()
 void Node::makeLeaf()
 {
     isLeaf = 1;
-    data = new Data*[size+1];
-    memset(data,0,sizeof(Data)*size+1);
+    data = new Data*[size + 1];
+    memset(data, 0, sizeof(Data)*size + 1);
     totalSize = 0;
 }
 

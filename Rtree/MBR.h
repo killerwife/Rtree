@@ -5,19 +5,20 @@
 class MBR
 {
 public:
-    Point topLeft;
-    Point bottomRight;
+    Point bottomLeft;
+    Point topRight;
     std::string toString();
-    long perimeter();
+    double perimeter();
     long distance(MBR input);
     bool isInside(MBR input);
     MBR();
-    MBR(char* byteArray, int* position);
+    MBR(char* byteArray, long* position);
     MBR(Point _topLeft,Point _bottomRight);
     MBR(const MBR& other);
     ~MBR();
     MBR& operator=(const MBR& other);
     bool operator==(const MBR& other);
+    MBR operator+(const MBR& other);
     long getSize();
-    void toByteArray(char* byteArray, int* position);
+    void toByteArray(char* byteArray, long* position);
 };
