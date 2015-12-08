@@ -12,17 +12,13 @@ Point::Point(char* byteArray, long* position, int _dimension)
     dimension = _dimension;
     points = new double[dimension];
     memcpy(points, byteArray + *position, sizeof(double)*dimension);
-    *position += sizeof(double)*dimension;    
+    (*position) += sizeof(double)*dimension;    
 }
 
 Point::Point(double *coordinates,int _dimension)
 {
     dimension = _dimension;
-    points = new double[dimension];
-    for (int i = 0; i < dimension; i++)
-    {
-        points[i] = coordinates[i];
-    }
+    points = coordinates;
 }
 
 Point::Point(const Point& other)
@@ -69,11 +65,11 @@ bool Point::operator==(const Point& other)
 Point Point::smaller(const Point& other)
 {
     double *tempPoints = new double[dimension];
-    Point temp(tempPoints,dimension);
     for (int i = 0; i < dimension; i++)
     {
         tempPoints[i] = std::min(points[i], other.points[i]);
     }
+    Point temp(tempPoints,dimension);
     return temp;
 }
 
@@ -96,5 +92,5 @@ long Point::getSize()
 void Point::toByteArray(char* byteArray, long* position)
 {
     memcpy(byteArray+*position,points,sizeof(double)*dimension);
-    *position += sizeof(double)*dimension;    
+    (*position) += sizeof(double)*dimension;    
 }

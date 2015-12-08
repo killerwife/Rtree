@@ -4,10 +4,11 @@
 class NodeFactory
 {
 public:
+    DataFactory* factory;
     NodeFactory();
     ~NodeFactory();
-    virtual Node *getBasicNode() = 0;
-    virtual Node *getLeafNode() = 0;
+    virtual Node *getBasicNode(long _blockSize, MBR input, long _parent, long position) = 0;
+    virtual Node *getLeafNode(long _blockSize, MBR input, long _parent, long position) = 0;
     virtual Node *getNode(FILE* treeFile, long position, long blockSize) = 0;
 };
 

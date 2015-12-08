@@ -8,11 +8,11 @@ class Node
 {
 protected:    
     long size;
-    int count;
     long blockSize;
     long totalSize;
 public:
     long location;
+    long count;
     char isLeaf;
     long parent;    
     MBR rectangle;
@@ -22,9 +22,9 @@ public:
     DataFactory* factory;
     Node();
     Node(long _blockSize, MBR input, long _parent, DataFactory* _factory, long position);
-    Node(long _blockSize, char* byteArray, long* position, DataFactory* _factory);
+    Node(long _blockSize, char* byteArray, long* position, DataFactory* _factory,long _location);
     virtual ~Node();
-    virtual void readFromFile(long position, FILE* file);
+    virtual void readFromFile(long _position, FILE* file);
     virtual void saveToFile(FILE* file);
     virtual std::string toString();
     void makeLeaf();

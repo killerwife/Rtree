@@ -16,14 +16,19 @@ Rtree::Rtree(std::string _fileName, long _blockSize, NodeFactory* _factory)
     tree = fopen(fileName.data(), "w+");
     factory = _factory;
     fread(&first,sizeof(long),0,tree);
-    long checkPos = fseek(tree, 0, SEEK_END);
+    fseek(tree, 0, SEEK_END);
+    long checkPos = ftell(tree);
     if (checkPos == 0)
     {
         root = -1;
+        first = -1;
     }
     else
     {
         root = 4;
+        end = checkPos;
+        fseek(tree, 0, SEEK_SET);
+        fread(&first, sizeof(long), 1, tree);
     }
 }
 
@@ -37,8 +42,11 @@ int Rtree::insertNode(Data* input)
 {
     if (root == -1)
     {
-        Node* temp = factory->getLeafNode();
+        Node* temp = factory->getLeafNode(blockSize, input->rectangle, -1, useSector());
         int result = temp->addChild(input);
+        temp->saveToFile(tree);
+        root = 4;
+        delete temp;
         return 0;
     }
     else
@@ -67,6 +75,7 @@ int Rtree::insertNode(Data* input, Node* start)
             }
         }
         temp->arrayOfChildren[index] = temp->arrayOfChildren[index] + input->rectangle;
+        temp->saveToFile(tree);
         temp->readFromFile(temp->arrayOfPositions[index], tree);
     }
     for (int i = 0; i < temp->getCount();i++)
@@ -84,6 +93,7 @@ int Rtree::insertNode(Data* input, Node* start)
     }
     else
     {
+        temp->saveToFile(tree);
         delete temp;
     }
     return 0;
@@ -105,7 +115,7 @@ int Rtree::editNode(Data* input, Data* old)
             leaf = parent;
         }
     }
-    return 1;
+    return 0;
 }
 
 Node* Rtree::findNode(Data* input)
@@ -127,7 +137,7 @@ Node* Rtree::findNode(Data* input)
             }
             else
             {
-                if (temp->data[i] == input)
+                if (*(temp->data[i]) == input)
                 {
                     leaf = temp;
                     i = stackPos.size();
@@ -234,7 +244,8 @@ std::vector<Data*> Rtree::searchNode(MBR nop)
             {
                 if (temp->data[i]->rectangle.isInside(nop))
                 {
-                    result.push_back(temp->data[i]);
+                    Data* data = factory->factory->getData(temp->data[i]);
+                    result.push_back(data);
                 }
             }
         }
@@ -252,9 +263,9 @@ void Rtree::quadraticSplit(Node* temp)
     {
         if (temp->location == root)
         {
-            parent = factory->getBasicNode();
-            parent->location = useSector();
+            parent = factory->getBasicNode(blockSize, MBR(), -1, useSector());
             temp->parent = parent->location;
+            root = parent->location;
         }
         else
         {
@@ -263,16 +274,16 @@ void Rtree::quadraticSplit(Node* temp)
         done = 1;
         if (temp->isLeaf == 1)
         {
-            sibling = factory->getLeafNode();
-            sibling->parent = temp->parent;
-            sibling->location = useSector();
+            sibling = factory->getLeafNode(blockSize,MBR(),temp->parent,useSector());
             Data** data = temp->data;
             temp->data = new Data*[temp->getSize() + 1];
+            int tempCount = temp->getCount();
+            temp->count = 0;
             int furthest, apart;
-            for (int i = 0; i < temp->getCount(); i++)
-            {
-                double maxDistance = -1;
-                for (int k = 0; k < temp->getCount(); k++)
+            double maxDistance = -1;
+            for (int i = 0; i < tempCount; i++)
+            {                
+                for (int k = 0; k < tempCount; k++)
                 {
                     double temp;
                     if (i == k)
@@ -298,7 +309,7 @@ void Rtree::quadraticSplit(Node* temp)
             }
             temp->rectangle = data[furthest]->rectangle;
             sibling->rectangle = data[apart]->rectangle;            
-            for (int i = 0; i < temp->getCount(); i++)
+            for (int i = 0; i < tempCount; i++)
             {
                 if (i != furthest&&i != apart)
                 {
@@ -320,9 +331,7 @@ void Rtree::quadraticSplit(Node* temp)
         }
         else
         {
-            sibling = factory->getBasicNode();
-            sibling->parent = temp->parent;
-            sibling->location = useSector();
+            sibling = factory->getBasicNode(blockSize, MBR(), temp->parent, useSector());
             MBR* rectangles = temp->arrayOfChildren;
             long* positions = temp->arrayOfPositions;
             temp->arrayOfChildren = new MBR[temp->getSize() + 1];
@@ -389,9 +398,17 @@ void Rtree::quadraticSplit(Node* temp)
 
 long Rtree::useSector()
 {
-    if (first == -1)
+    if (root==-1)
     {
-        fseek(tree,0,SEEK_END);
+        long temp=-1;
+        fwrite(&temp, sizeof(long), 1, tree);
+        end = ftell(tree);
+        return end;
+    }
+    else if (first == -1)
+    {
+        end += blockSize;
+        fseek(tree,end,SEEK_SET);
         return ftell(tree);
     }
     else
@@ -400,7 +417,7 @@ long Rtree::useSector()
         long temp = first;
         char byteArray[5];
         fread(byteArray,sizeof(long),1,tree);
-        memcpy(&temp,byteArray+sizeof(char),sizeof(long));
+        memcpy(&first,byteArray+sizeof(char),sizeof(long));
         return temp;
     }
 }
@@ -422,6 +439,8 @@ void Rtree::storeSector(long _sector)
     memcpy(byteArray + sizeof(char)+sizeof(long), &zero, sizeof(long));
     fwrite(byteArray,sizeof(long)*2+sizeof(char),1,tree);
     first = _sector;
+    fseek(tree, 0, SEEK_SET);
+    fwrite(&first, sizeof(long), 1, tree);
 }
 
 void Rtree::freeSectors()
@@ -440,7 +459,7 @@ void Rtree::freeSectors()
             memcpy(&temp, byteArray + sizeof(char), sizeof(long));
             memcpy(&previous, byteArray + sizeof(char) + sizeof(long), sizeof(long));
             SetEndOfFile((HANDLE)_get_osfhandle(_fileno(tree)));
-            fseek(tree, 1, previous);
+            fseek(tree, previous+1, SEEK_SET);
             fwrite(&temp, sizeof(long), 1, tree);
         }
         else

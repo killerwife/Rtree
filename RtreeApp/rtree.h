@@ -16,6 +16,7 @@ private:
     long blockSize;
     NodeFactory* factory;
     long first;
+    long end;
 public:
     Rtree();
     Rtree(std::string _fileName,long _blockSize,NodeFactory* factory);

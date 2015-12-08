@@ -58,7 +58,7 @@ public:
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         textBrowser = new QTextBrowser(centralWidget);
         textBrowser->setObjectName(QStringLiteral("textBrowser"));
-        textBrowser->setGeometry(QRect(240, 20, 341, 281));
+        textBrowser->setGeometry(QRect(20, 20, 561, 281));
         RtreeAppClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(RtreeAppClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));

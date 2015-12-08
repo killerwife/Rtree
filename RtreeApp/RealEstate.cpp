@@ -22,8 +22,7 @@ unsigned long _LongRand()
 }
 
 RealEstate::RealEstate()
-{
-    srand(time(NULL));
+{    
     ID = _LongRand();
     char nameTemp[5];
     nameTemp[0] = ((char)(rand() % 26) + 'A');
@@ -32,6 +31,15 @@ RealEstate::RealEstate()
     nameTemp[3] = ((char)(rand() % 26) + 'A');
     nameTemp[4] = '\0';
     name = nameTemp;
+    char descTemp[7];
+    descTemp[0] = ((char)(rand() % 26) + 'A');
+    descTemp[1] = ((char)(rand() % 26) + 'A');
+    descTemp[2] = ((char)(rand() % 26) + 'A');
+    descTemp[3] = ((char)(rand() % 26) + 'A');
+    descTemp[4] = ((char)(rand() % 26) + 'A');
+    descTemp[5] = ((char)(rand() % 26) + 'A');
+    descTemp[6] = '\0';
+    description = descTemp;
     long originX = _LongRand();
     long originY = _LongRand();
     for (int i = 0; i < 4; i++)
@@ -42,7 +50,9 @@ RealEstate::RealEstate()
         coordinates[i].width = abs(rand() % 2) == 0 ? 'V' : 'Z';
     }
     double bottom = DBL_MAX, left = DBL_MAX, top = DBL_MIN, right = DBL_MIN;
-    for (int i = 0; i < 4; i++)
+    count = 4;
+    int i;
+    for (i = 0; i < count; i++)
     {
         if (coordinates[i].height > top)
         {
@@ -60,6 +70,13 @@ RealEstate::RealEstate()
         {
             left = coordinates[i].width;
         }
+    }
+    for (; i < 60; i++)
+    {
+        coordinates[i].height = '\0';
+        coordinates[i].width = '\0';
+        coordinates[i].heightPosition = 0;
+        coordinates[i].widthPosition = 0;
     }
     double* first = new double[2], *second = new double[2];
     first[0] = left;
@@ -75,12 +92,14 @@ RealEstate::RealEstate(long _ID, MBR _rectangle)
     rectangle = rectangle;
 }
 
-RealEstate::RealEstate(long _ID, std::string _name,std::string _description, GPS _coordinates[60])
+RealEstate::RealEstate(long _ID, std::string _name,std::string _description, GPS _coordinates[60],int _count)
 {
     ID = _ID;
+    count = _count;
     name = _name;
     description = _description;
-    for (int i = 0; i < 60; i++)
+    int i = 0;
+    for (i = 0; i < count; i++)
     {
         coordinates[i].height = _coordinates[i].height;
         coordinates[i].width = _coordinates[i].width;
@@ -88,24 +107,31 @@ RealEstate::RealEstate(long _ID, std::string _name,std::string _description, GPS
         coordinates[i].widthPosition = _coordinates[i].widthPosition;
     }
     double bottom = DBL_MAX, left = DBL_MAX, top = DBL_MIN, right = DBL_MIN;
-    for (int i = 0; i < 60; i++)
+    for (i = 0; i < count; i++)
     {
-        if (coordinates[i].height > top)
+        if (coordinates[i].heightPosition > top)
         {
-            top = coordinates[i].height;
+            top = coordinates[i].heightPosition;
         }
-        if (coordinates[i].height < bottom)
+        if (coordinates[i].heightPosition < bottom)
         {
-            bottom = coordinates[i].height;
+            bottom = coordinates[i].heightPosition;
         }
-        if (coordinates[i].width > right)
+        if (coordinates[i].widthPosition > right)
         {
-            right = coordinates[i].width;
+            right = coordinates[i].widthPosition;
         }
-        if (coordinates[i].width < left)
+        if (coordinates[i].widthPosition < left)
         {
-            left = coordinates[i].width;
+            left = coordinates[i].widthPosition;
         }
+    }
+    for (; i < 60; i++)
+    {
+        coordinates[i].height = '\0';
+        coordinates[i].width = '\0';
+        coordinates[i].heightPosition = 0;
+        coordinates[i].widthPosition = 0;
     }
     double* first = new double[2], *second = new double[2];
     first[0] = left;
@@ -126,10 +152,19 @@ RealEstate::RealEstate(char* byteArray, long* position)
     *position += sizeof(char) * 20;
     memcpy(_description, byteArray + *position, sizeof(char) * 60);
     *position += sizeof(char) * 60;
+    name = _name;
+    description = _description;
     for (int i = 0; i < 60; i++)
     {
-        memcpy(&coordinates[i], byteArray + *position, sizeof(GPS));
-        *position += sizeof(GPS);
+        coordinates[i] = GPS(byteArray,position);
+    }
+    for (int i = 0; i < 60; i++)
+    {
+        if (coordinates[i].height == '\0')
+        {
+            count = i;
+            break;
+        }
     }
 }
 
@@ -145,7 +180,7 @@ void RealEstate::regenerate()
 
 long RealEstate::getSize()
 {
-    return sizeof(long) + sizeof(char) * 80 + sizeof(GPS) * 60+sizeof(double)*2+sizeof(int);
+    return sizeof(long) + sizeof(char) * 80 + (sizeof(double)*2+sizeof(char)*2) * 60+sizeof(double)*2+sizeof(int);
 }
 
 void RealEstate::toByteArray(char* byteArray, long* position)
@@ -157,27 +192,26 @@ void RealEstate::toByteArray(char* byteArray, long* position)
     for (i = 0; i < name.size(); i++)
     {
         byteArray[*position] = name[i];
-        *position++;
+        (*position)++;
     }
     for (; i < 20; i++)
     {
         byteArray[*position] = '\0';
-        *position++;
+        (*position)++;
     }
     for (i = 0; i < description.size(); i++)
     {
         byteArray[*position] = description[i];
-        *position++;
+        (*position)++;
     }
     for (; i < 60; i++)
     {
         byteArray[*position] = '\0';
-        *position++;
+        (*position)++;
     }
     for (i = 0; i < 60; i++)
     {
-        memcpy(byteArray + *position, &coordinates[i], sizeof(GPS));
-        *position += sizeof(GPS);
+        coordinates[i].toByteArray(byteArray, position);
     }
 }
 
@@ -195,6 +229,11 @@ bool RealEstate::operator==(Data* other)
 
 std::string RealEstate::to_string()
 {
-    std::string output = "";
+    std::string output;
+    output = "ID:" + std::to_string(ID) + " Name:" + name + " Description:" + description+ "Coordinates:";
+    for (int i = 0; i < count; i++)
+    {
+        output+=coordinates[i].to_string();
+    }
     return output;
 }

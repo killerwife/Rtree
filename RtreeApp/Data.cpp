@@ -26,12 +26,12 @@ void Data::toByteArray(char* byteArray, long *position)
     for (i = 0; i < name.size(); i++)
     {
         byteArray[*position] = name[i];
-        *position++;
+        (*position)++;
     }
     for (; i < 20; i++)
     {
         byteArray[*position] = '\0';
-        *position++;
+        (*position)++;
     }
 }
 

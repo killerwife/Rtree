@@ -25,6 +25,7 @@ RtreeApp::~RtreeApp()
 
 void RtreeApp::handleAddRealEstateForm()
 {
+    gpsFormWindow.count = 0;
     addFormWindow.option = 0;
     addFormWindow.ui.textEdit->setText("");
     addFormWindow.ui.lineName->setText("");
@@ -38,23 +39,32 @@ void RtreeApp::handleEditRealEstateForm()
 {
     findFormWindow.ui.labelID->show();
     findFormWindow.ui.lineID->show();
+    findFormWindow.ui.lineBLX->setText("");
+    findFormWindow.ui.lineBLY->setText("");
+    findFormWindow.ui.lineTRX->setText("");
+    findFormWindow.ui.lineTRY->setText("");
+    findFormWindow.ui.lineID->setText("");
     findFormWindow.option = 2;
     findFormWindow.show();
 }
 
 void RtreeApp::handleFindRealEstateForm()
 {
-    findFormWindow.ui.labelID->show();
-    findFormWindow.ui.lineID->show();
+    findFormWindow.ui.labelID->hide();
+    findFormWindow.ui.lineID->hide();
     findFormWindow.ui.buttonFind->setText("Find");
+    findFormWindow.ui.lineBLX->setText("");
+    findFormWindow.ui.lineBLY->setText("");
+    findFormWindow.ui.lineTRX->setText("");
+    findFormWindow.ui.lineTRY->setText("");
     findFormWindow.option = 0;
     findFormWindow.show();
 }
 
 void RtreeApp::handleRemoveRealEstateForm()
 {
-    findFormWindow.ui.labelID->hide();
-    findFormWindow.ui.lineID->hide();
+    findFormWindow.ui.labelID->show();
+    findFormWindow.ui.lineID->show();
     findFormWindow.ui.buttonFind->setText("Delete");
     findFormWindow.option = 1;
     findFormWindow.show();
@@ -73,13 +83,13 @@ void RtreeApp::handleGenerate()
 void RtreeApp::handleAddCoordinate()
 {
     QString height = gpsFormWindow.ui.lineHeight->text();
-    QString width = gpsFormWindow.ui.lineHeight->text();
-    QString X = gpsFormWindow.ui.lineHeight->text();
-    QString Y = gpsFormWindow.ui.lineHeight->text();
+    QString width = gpsFormWindow.ui.lineWidth->text();
+    QString X = gpsFormWindow.ui.lineX->text();
+    QString Y = gpsFormWindow.ui.lineY->text();
     gpsFormWindow.coordinates[gpsFormWindow.count].height = height.at(0).toLatin1();
     gpsFormWindow.coordinates[gpsFormWindow.count].width = width.at(0).toLatin1();
-    gpsFormWindow.coordinates[gpsFormWindow.count].heightPosition = X.toLong();
-    gpsFormWindow.coordinates[gpsFormWindow.count].widthPosition = Y.toLong();
+    gpsFormWindow.coordinates[gpsFormWindow.count].heightPosition = X.toDouble();
+    gpsFormWindow.coordinates[gpsFormWindow.count].widthPosition = Y.toDouble();
     gpsFormWindow.count++;
     gpsFormWindow.ui.lineHeight->setText("");
     gpsFormWindow.ui.lineWidth->setText("");
@@ -93,8 +103,7 @@ void RtreeApp::handleExitCoordinateForm()
 }
 
 void RtreeApp::handleOpenCoordinateForm()
-{
-    gpsFormWindow.count = 0;
+{    
     gpsFormWindow.ui.lineHeight->setText("");
     gpsFormWindow.ui.lineWidth->setText("");
     gpsFormWindow.ui.lineX->setText("");
@@ -114,26 +123,35 @@ void RtreeApp::handleAddRealEstate()
         coordinates[i] = gpsFormWindow.coordinates[i];
     }
     std::string temp = addFormWindow.ui.textEdit->toPlainText().toStdString();
-    for (k = 0; i < 60; i++)
+    for (k = 0; i < 60&&k<temp.size(); i++)
     {
         int lineStart = k;
         std::string line;
-        for (; k < temp.size() && k != '\n'; k++);
+        for (; k < temp.size() && temp[k] != '\n'; k++);
         line = temp.substr(lineStart, k - lineStart);
         coordinates[i] = GPS(line);
         k++;
     }
-    RealEstate* input = new RealEstate(ID.toLong(), name.toStdString(), description.toStdString(), coordinates);
-    int result = database->addRealEstate(input);
-    if (result > 0)
+    RealEstate* input = new RealEstate(ID.toLong(), name.toStdString(), description.toStdString(), coordinates,i);
+    if (addFormWindow.option == 0)
     {
-        QMessageBox msgBox;
-        msgBox.setText("Real Estate already found.");
-        msgBox.exec();
+        int result = database->addRealEstate(input);
+        if (result > 0)
+        {
+            QMessageBox msgBox;
+            msgBox.setText("Real Estate already found.");
+            msgBox.exec();
+        }
+        else
+        {
+            addFormWindow.hide();
+        }
     }
     else
     {
+        int result = database->editRealEstate(input,tempData);
         addFormWindow.hide();
+        delete tempData;
     }
 }
 
@@ -164,6 +182,7 @@ void RtreeApp::handleFindRealEstate()
             output += data[i]->to_string();
         }
         ui.textBrowser->setText(output.data());
+        findFormWindow.hide();
     }
     else if (findFormWindow.option == 1)
     {
@@ -186,6 +205,10 @@ void RtreeApp::handleFindRealEstate()
                 break;
             }
             msgBox.exec();
+        }
+        else
+        {
+            findFormWindow.hide();
         }
     }
     else
@@ -220,15 +243,17 @@ void RtreeApp::handleFindRealEstate()
             addFormWindow.ui.lineName->setText(temp->name.data());
             addFormWindow.ui.lineDescription->setText(temp->description.data());
             std::string output;
-            for (int i = 0; i < 60; i++)
+            for (int i = 0; i < temp->count; i++)
             {
                 output += temp->coordinates[i].to_string() + "\n";
             }
             addFormWindow.ui.textEdit->setText(output.data());
-        }
-        findFormWindow.hide();
-        addFormWindow.ui.buttonAdd->setText("Edit");
-        addFormWindow.show();
+            tempData = temp;
+            findFormWindow.hide();
+            gpsFormWindow.count = 0;
+            addFormWindow.ui.buttonAdd->setText("Edit");
+            addFormWindow.show();
+        }        
     }
 }
 

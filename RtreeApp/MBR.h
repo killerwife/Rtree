@@ -7,6 +7,7 @@ class MBR
 public:
     Point bottomLeft;
     Point topRight;
+    bool undefined;
     std::string toString();
     double area();
     double perimeter();

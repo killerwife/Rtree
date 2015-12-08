@@ -1,9 +1,9 @@
 #include "DatabaseCore.h"
 
 
-DatabaseCore::DatabaseCore()
+DatabaseCore::DatabaseCore() : realEstateTree("temp.txt", 10240, new BasicNodeFactory(new RealEstateDataFactory()))
 {
-    realEstateTree = Rtree("temp.txt", 1024, new BasicNodeFactory(new RealEstateDataFactory()));
+
 }
 
 

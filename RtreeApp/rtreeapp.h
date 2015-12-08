@@ -39,6 +39,7 @@ private:
     addForm addFormWindow;
     findForm findFormWindow;
     gpsForm gpsFormWindow;
+    Data* tempData;
     Ui::RtreeAppClass ui;
 };
 
