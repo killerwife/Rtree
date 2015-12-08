@@ -1,0 +1,9 @@
+﻿Build started 07.12.2015 21:25:12.
+     1>Project "E:\Users\killerwife\C++ Source\Rtree\RtreeApp\RtreeApp.vcxproj" on node 2 (CustomBuild target(s)).
+     1>CustomBuild:
+         Uic'ing addForm.ui...
+     1>Done Building Project "E:\Users\killerwife\C++ Source\Rtree\RtreeApp\RtreeApp.vcxproj" (CustomBuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.06
