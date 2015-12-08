@@ -69,6 +69,12 @@ RealEstate::RealEstate()
     rectangle = MBR(Point(first, 2), Point(second, 2));
 }
 
+RealEstate::RealEstate(long _ID, MBR _rectangle)
+{
+    ID = _ID;
+    rectangle = rectangle;
+}
+
 RealEstate::RealEstate(long _ID, std::string _name,std::string _description, GPS _coordinates[60])
 {
     ID = _ID;
@@ -130,6 +136,11 @@ RealEstate::RealEstate(char* byteArray, long* position)
 RealEstate::~RealEstate()
 {
 
+}
+
+void RealEstate::regenerate()
+{
+    ID = _LongRand();
 }
 
 long RealEstate::getSize()

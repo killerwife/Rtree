@@ -69,20 +69,32 @@ int Rtree::insertNode(Data* input, Node* start)
         temp->arrayOfChildren[index] = temp->arrayOfChildren[index] + input->rectangle;
         temp->readFromFile(temp->arrayOfPositions[index], tree);
     }
+    for (int i = 0; i < temp->getCount();i++)
+    {
+        if (temp->data[i] == input)
+        {
+            delete temp;
+            return 1;
+        }
+    }
     int result = temp->addChild(input);
     if (result > 0)
     {
         quadraticSplit(temp);
     }
+    else
+    {
+        delete temp;
+    }
     return 0;
 }
 
-int Rtree::editNode(Data* input, MBR old)
+int Rtree::editNode(Data* input, Data* old)
 {
     Node* leaf = findNode(old);
-    leaf->editChild(old,input);
+    leaf->editChild(old->rectangle,input);
     leaf->saveToFile(tree);
-    if (!(input->rectangle == old))
+    if (!(input->rectangle == old->rectangle))
     {
         while (leaf->location != root)
         {
@@ -96,7 +108,7 @@ int Rtree::editNode(Data* input, MBR old)
     return 1;
 }
 
-Node* Rtree::findNode(MBR input)
+Node* Rtree::findNode(Data* input)
 {
     std::vector<long> stackPos;
     Node* leaf;
@@ -108,14 +120,14 @@ Node* Rtree::findNode(MBR input)
         {
             if (temp->isLeaf == 0)
             {
-                if (temp->arrayOfChildren[i].isInside(input))
+                if (temp->arrayOfChildren[i].isInside(input->rectangle))
                 {
                     stackPos.push_back(temp->arrayOfPositions[i]);
                 }
             }
             else
             {
-                if (temp->data[i]->rectangle == input)
+                if (temp->data[i] == input)
                 {
                     leaf = temp;
                     i = stackPos.size();
@@ -133,7 +145,7 @@ Node* Rtree::findNode(MBR input)
 
 int Rtree::deleteNode(Data* input)
 {
-    Node* leaf = findNode(input->rectangle);
+    Node* leaf = findNode(input);
     int result = leaf->removeChild(input);
     if (result == 1&&leaf->location!=root)
     {
@@ -372,6 +384,7 @@ void Rtree::quadraticSplit(Node* temp)
         delete sibling;
         temp = parent;
     }
+    delete temp;
 }
 
 long Rtree::useSector()
@@ -394,6 +407,12 @@ long Rtree::useSector()
 
 void Rtree::storeSector(long _sector)
 {
+    fseek(tree, -blockSize, SEEK_END);
+    if (_sector == ftell(tree))
+    {
+        freeSectors();
+        return;
+    }
     char empty = -1;
     long zero = -1;
     fseek(tree, 0, _sector);

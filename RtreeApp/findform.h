@@ -11,9 +11,10 @@ class findForm : public QWidget
 public:
     findForm(QWidget *parent = 0);
     ~findForm();
-
-private:
+    char option;
     Ui::findForm ui;
+private:
+    
 };
 
 #endif // FINDFORM_H

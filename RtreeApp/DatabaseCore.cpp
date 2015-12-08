@@ -18,19 +18,31 @@ std::vector<Data*> DatabaseCore::findRealEstate(MBR box)
 }
 
 int DatabaseCore::addRealEstate(RealEstate* input)
-{
-    realEstateTree.insertNode(input);
-    return 0;
+{    
+    return realEstateTree.insertNode(input);
 }
 
 int DatabaseCore::deleteRealEstate(RealEstate* input)
-{
-    realEstateTree.deleteNode(input);
-    return 0;
+{    
+    return realEstateTree.deleteNode(input);
 }
 
-int DatabaseCore::editRealEstate(RealEstate* input,MBR old)
+int DatabaseCore::editRealEstate(RealEstate* input,Data* old)
+{    
+    return realEstateTree.editNode(input, old);
+}
+
+void DatabaseCore::generate(long long amount)
 {
-    realEstateTree.editNode(input,old);
-    return 0;
+    for (int i = 0; i < amount; i++)
+    {
+        int check = 0;
+        RealEstate* temp = new RealEstate();
+        check = realEstateTree.insertNode(temp);
+        while (check == 1)
+        {
+            temp->regenerate();
+            check=realEstateTree.insertNode(temp);
+        }
+    }
 }

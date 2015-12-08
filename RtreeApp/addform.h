@@ -11,9 +11,11 @@ class addForm : public QWidget
 public:
     addForm(QWidget *parent = 0);
     ~addForm();
+    char option;
+    Ui::addForm ui;
 
 private:
-    Ui::addForm ui;
+    
 };
 
 #endif // ADDFORM_H

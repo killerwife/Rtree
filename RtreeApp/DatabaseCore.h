@@ -13,6 +13,7 @@ public:
     std::vector<Data*> findRealEstate(MBR box);
     int addRealEstate(RealEstate* input);
     int deleteRealEstate(RealEstate* input);
-    int editRealEstate(RealEstate* input,MBR old);
+    int editRealEstate(RealEstate* input, Data* old);
+    void generate(long long amount);
 };
 

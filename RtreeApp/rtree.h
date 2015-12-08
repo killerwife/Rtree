@@ -24,8 +24,8 @@ public:
     int insertNode(Data* input, Node* start);
     int deleteNode(Data* input);
     std::vector<Data*> searchNode(MBR nop);
-    int editNode(Data* input,MBR old);
-    Node* findNode(MBR input);
+    int editNode(Data* input, Data* old);
+    Node* findNode(Data* input);
     void merge(Node* temp);
     void quadraticSplit(Node* temp);
     long useSector();

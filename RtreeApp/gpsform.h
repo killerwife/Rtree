@@ -3,17 +3,20 @@
 
 #include <QWidget>
 #include "ui_gpsform.h"
+#include "RealEstate.h"
 
 class gpsForm : public QWidget
 {
     Q_OBJECT
 
 public:
+    GPS coordinates[60];
+    int count;
     gpsForm(QWidget *parent = 0);
     ~gpsForm();
-
-private:
     Ui::gpsForm ui;
+private:
+    
 };
 
 #endif // GPSFORM_H
