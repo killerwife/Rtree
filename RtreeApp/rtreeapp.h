@@ -20,18 +20,18 @@ public:
     void setDatabase(DatabaseCore* _database);
 
     private slots:
-    void RtreeApp::handleAddRealEstateForm();
-    void RtreeApp::handleEditRealEstateForm();
-    void RtreeApp::handleFindRealEstateForm();
-    void RtreeApp::handleRemoveRealEstateForm();
-    void RtreeApp::handleGenerate();
-    void RtreeApp::handleAddCoordinate();
-    void RtreeApp::handleExitCoordinateForm();
-    void RtreeApp::handleOpenCoordinateForm();
-    void RtreeApp::handleAddRealEstate();
-    void RtreeApp::handleCancelAddRealEstate();
-    void RtreeApp::handleCancelFindRealEstate();
-    void RtreeApp::handleFindRealEstate();
+    void handleAddRealEstateForm();
+    void handleEditRealEstateForm();
+    void handleFindRealEstateForm();
+    void handleRemoveRealEstateForm();
+    void handleGenerate();
+    void handleAddCoordinate();
+    void handleExitCoordinateForm();
+    void handleOpenCoordinateForm();
+    void handleAddRealEstate();
+    void handleCancelAddRealEstate();
+    void handleCancelFindRealEstate();
+    void handleFindRealEstate();
 
 
 private:

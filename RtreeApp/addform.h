@@ -12,7 +12,7 @@ public:
     addForm(QWidget *parent = 0);
     ~addForm();
     char option;
-    Ui::addForm ui;
+    Ui::realEstateForm ui;
 
 private:
     

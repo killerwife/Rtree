@@ -12,7 +12,7 @@ public:
     findForm(QWidget *parent = 0);
     ~findForm();
     char option;
-    Ui::findForm ui;
+    Ui::findRealEstateForm ui;
 private:
     
 };

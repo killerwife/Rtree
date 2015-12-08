@@ -12,7 +12,7 @@ RtreeApp::RtreeApp(QWidget *parent)
     connect(gpsFormWindow.ui.buttonAddCoordinate, SIGNAL(released()), this, SLOT(handleAddCoordinate()));
     connect(gpsFormWindow.ui.buttonExitCoordinate, SIGNAL(released()), this, SLOT(handleExitCoordinateForm()));
     connect(addFormWindow.ui.buttonAddCoordinate, SIGNAL(released()), this, SLOT(handleOpenCoordinateForm()));
-    connect(addFormWindow.ui.buttonOK, SIGNAL(released()), this, SLOT(handleAddRealEstate()));
+    connect(addFormWindow.ui.buttonAdd, SIGNAL(released()), this, SLOT(handleAddRealEstate()));
     connect(addFormWindow.ui.buttonCancel, SIGNAL(released()), this, SLOT(handleCancelAddRealEstate()));
     connect(findFormWindow.ui.buttonCancel, SIGNAL(released()), this, SLOT(handleCancelFindRealEstate()));
     connect(findFormWindow.ui.buttonFind, SIGNAL(released()), this, SLOT(handleFindRealEstate()));
@@ -30,32 +30,32 @@ void RtreeApp::handleAddRealEstateForm()
     addFormWindow.ui.lineName->setText("");
     addFormWindow.ui.lineID->setText("");
     addFormWindow.ui.lineDescription->setText("");
-    addFormWindow.ui.buttonAdd.setText("Add");
+    addFormWindow.ui.buttonAdd->setText("Add");
     addFormWindow.show();
 }
 
 void RtreeApp::handleEditRealEstateForm()
 {
-    findFormWindow.ui.labelID.show();
-    findFormWindow.ui.lineID.show();
+    findFormWindow.ui.labelID->show();
+    findFormWindow.ui.lineID->show();
     findFormWindow.option = 2;
     findFormWindow.show();
 }
 
 void RtreeApp::handleFindRealEstateForm()
 {
-    findFormWindow.ui.labelID.show();
-    findFormWindow.ui.lineID.show();
-    findFormWindow.ui.buttonFind.setText("Find");
+    findFormWindow.ui.labelID->show();
+    findFormWindow.ui.lineID->show();
+    findFormWindow.ui.buttonFind->setText("Find");
     findFormWindow.option = 0;
     findFormWindow.show();
 }
 
 void RtreeApp::handleRemoveRealEstateForm()
 {
-    findFormWindow.ui.labelID.hide();
-    findFormWindow.ui.lineID.hide();
-    findFormWindow.ui.buttonFind.setText("Delete");
+    findFormWindow.ui.labelID->hide();
+    findFormWindow.ui.lineID->hide();
+    findFormWindow.ui.buttonFind->setText("Delete");
     findFormWindow.option = 1;
     findFormWindow.show();
 }
@@ -104,16 +104,16 @@ void RtreeApp::handleOpenCoordinateForm()
 
 void RtreeApp::handleAddRealEstate()
 {
-    QString ID = addFormWindow.ui.lineID.text();
-    QString name = addFormWindow.ui.lineName.text();
-    QString description = addFormWindow.ui.lineDescription.text();
+    QString ID = addFormWindow.ui.lineID->text();
+    QString name = addFormWindow.ui.lineName->text();
+    QString description = addFormWindow.ui.lineDescription->text();
     GPS coordinates[60];
     int i, k;
     for (i = 0; i < gpsFormWindow.count; i++)
     {
         coordinates[i] = gpsFormWindow.coordinates[i];
     }
-    std::string temp = addFormWindow.ui.textEdit->text().toStdString();
+    std::string temp = addFormWindow.ui.textEdit->toPlainText().toStdString();
     for (k = 0; i < 60; i++)
     {
         int lineStart = k;
@@ -216,7 +216,7 @@ void RtreeApp::handleFindRealEstate()
         else
         {
             RealEstate* temp = (RealEstate*)data[i];
-            addFormWindow.ui.lineID->setText(temp->ID);
+            addFormWindow.ui.lineID->setText(std::to_string(temp->ID).data());
             addFormWindow.ui.lineName->setText(temp->name.data());
             addFormWindow.ui.lineDescription->setText(temp->description.data());
             std::string output;
@@ -227,7 +227,7 @@ void RtreeApp::handleFindRealEstate()
             addFormWindow.ui.textEdit->setText(output.data());
         }
         findFormWindow.hide();
-        addFormWindow.ui.buttonAdd.setText("Edit");
+        addFormWindow.ui.buttonAdd->setText("Edit");
         addFormWindow.show();
     }
 }
