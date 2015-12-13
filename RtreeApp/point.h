@@ -1,5 +1,6 @@
 #include <string.h>
 #include <algorithm>
+#define _CRTDBG_MAP_ALLOC
 #pragma once
 class Point
 {

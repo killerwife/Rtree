@@ -6,7 +6,7 @@ class RealEstateDataFactory :
 {
 public:
     RealEstateDataFactory();
-    ~RealEstateDataFactory();
+    virtual ~RealEstateDataFactory() override;
     virtual Data* getData(char* byteArray, long* position)override;
     virtual Data* getData(Data* temp)override;
     virtual long getDataSize()override;

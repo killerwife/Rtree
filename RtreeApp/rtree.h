@@ -17,6 +17,7 @@ private:
     NodeFactory* factory;
     long first;
     long end;
+    long defaultRoot=8;
 public:
     Rtree();
     Rtree(std::string _fileName,long _blockSize,NodeFactory* factory);
@@ -32,5 +33,6 @@ public:
     long useSector();
     void storeSector(long _sector);
     void freeSectors();
+    void makeRoot(long location);
 };
 

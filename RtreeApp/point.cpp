@@ -2,9 +2,7 @@
 
 Point::Point()
 {
-    dimension = 1;
-    points = new double[dimension];
-    points[0] = 0;
+    points = nullptr;
 }
 
 Point::Point(char* byteArray, long* position, int _dimension)
@@ -33,13 +31,21 @@ Point::Point(const Point& other)
 
 Point::~Point()
 {
-    delete[]points;
+    delete[]points; 
 }
 
 Point& Point::operator=(const Point& other)
 {
     dimension = other.dimension;
-    points = new double[dimension];
+    if (points != nullptr)
+    {
+        delete[]points;
+        points = new double[dimension];
+    }
+    else
+    {
+        points = new double[dimension];
+    }
     for (int i = 0; i < dimension; i++)
     {
         points[i] = other.points[i];
@@ -76,17 +82,17 @@ Point Point::smaller(const Point& other)
 Point Point::bigger(const Point& other)
 {
     double *tempPoints = new double[dimension];
-    Point temp(tempPoints, dimension);
     for (int i = 0; i < dimension; i++)
     {
         tempPoints[i] = std::max(points[i], other.points[i]);
     }
+    Point temp(tempPoints, dimension);
     return temp;
 }
 
 long Point::getSize()
 {
-    return sizeof(double)*dimension + sizeof(int);
+    return sizeof(double)*dimension;
 }
 
 void Point::toByteArray(char* byteArray, long* position)

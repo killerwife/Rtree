@@ -68,7 +68,7 @@ public:
     RealEstate(long _ID, MBR _rectangle);
     RealEstate(long _ID, std::string name, std::string _description, GPS _coordinates[60],int _count);
     RealEstate(char* byteArray, long* position);
-    ~RealEstate();
+    virtual ~RealEstate()override;
     void regenerate();
     virtual long getSize()override;
     virtual void toByteArray(char* byteArray, long* position)override;

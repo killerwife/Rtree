@@ -14,6 +14,7 @@ public:
     double distance(MBR input);
     bool isInside(MBR input);
     MBR();
+    MBR(int dimension);
     MBR(char* byteArray, long* position);
     MBR(Point _bottomLeft, Point _topRight);
     MBR(const MBR& other);

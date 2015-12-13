@@ -10,7 +10,7 @@ Node::Node(long _blockSize, MBR input, long _parent, DataFactory* _factory,long 
 {
     blockSize = _blockSize;
     location = position;
-    size = (_blockSize - sizeof(long) - sizeof(char)) / (sizeof(long) + input.getSize());
+    size = (blockSize - sizeof(long) * 2 - sizeof(char) - input.getSize()) / (sizeof(long) + input.getSize());
     parent = _parent;
     factory = _factory;
     rectangle = input;
@@ -35,13 +35,14 @@ Node::Node(long _blockSize, char* byteArray, long* position, DataFactory* _facto
     rectangle = MBR(byteArray, position);
     if (isLeaf == 0)
     {        
-        size = (_blockSize - sizeof(long) - sizeof(char)) / (sizeof(long) + rectangle.getSize());
+        size = (blockSize - sizeof(long) * 2 - sizeof(char) - rectangle.getSize()) / (sizeof(long) + rectangle.getSize());
         arrayOfChildren = new MBR[size + 1];
+        arrayOfPositions = new long[size + 1];
         for (int i = 0; i < count; i++)
         {
             arrayOfChildren[i]=MBR(byteArray,position);
         }
-        memcpy(arrayOfPositions, byteArray + *position, sizeof(double)*size);
+        memcpy(arrayOfPositions, byteArray + *position, sizeof(long)*size);
         (*position) += sizeof(double)*size;
     }
     else
@@ -81,14 +82,19 @@ void Node::readFromFile(long _position, FILE* file)
     }
     else
     {
+        for (int i = 0; i < count; i++)
+        {
+            delete data[i];
+        }
         delete[]data;
     }
     fseek(file, _position, SEEK_SET);
-    long pos = _position;
-    long* position=&pos;
+    location = _position;
+    long pos = 0;
+    long* position = &pos;
+    totalSize = 0;
     char* byteArray = new char[blockSize];
     fread(byteArray, blockSize, 1, file);
-    location = _position;
     isLeaf = byteArray[0];
     (*position)++;
     memcpy(&parent, byteArray + *position, sizeof(long));
@@ -98,13 +104,14 @@ void Node::readFromFile(long _position, FILE* file)
     rectangle = MBR(byteArray, position);
     if (isLeaf == 0)
     {
-        size = (blockSize - sizeof(long) - sizeof(char)) / (sizeof(long) + rectangle.getSize());
+        size = (blockSize - sizeof(long)*2 - sizeof(char)-rectangle.getSize()) / (sizeof(long) + rectangle.getSize());
         arrayOfChildren = new MBR[size + 1];
+        arrayOfPositions = new long[size + 1];
         for (int i = 0; i < count; i++)
         {
             arrayOfChildren[i] = MBR(byteArray, position);
         }
-        memcpy(arrayOfPositions, byteArray + *position, sizeof(double)*size);
+        memcpy(arrayOfPositions, byteArray + *position, sizeof(long)*size);
         (*position) += sizeof(double)*size;
     }
     else
@@ -116,6 +123,7 @@ void Node::readFromFile(long _position, FILE* file)
             data[i] = factory->getData(byteArray, position);
         }
     }
+    delete[] byteArray;
 }
 
 void Node::saveToFile(FILE* file)
@@ -131,7 +139,7 @@ void Node::saveToFile(FILE* file)
     rectangle.toByteArray(byteArray,indexPointer);
     if (isLeaf == 0)
     {
-        for (int i = 0; i < size; i++)
+        for (int i = 0; i < count; i++)
         {
             arrayOfChildren->toByteArray(byteArray,&startIndex);
         }
@@ -141,11 +149,6 @@ void Node::saveToFile(FILE* file)
     {
         for (int i = 0; i < count; i++)
         {
-            if (data[i] == nullptr)
-            {
-                count++;
-                continue;
-            }
             data[i]->toByteArray(byteArray, indexPointer);
         }
     }
@@ -233,7 +236,7 @@ int Node::addChild(Data* _node)
     totalSize += _node->getSize();
     rectangle = rectangle + _node->rectangle;
     count++;
-    if (count > size)
+    if (count >= size)
     {
         return 1;
     }
@@ -288,6 +291,7 @@ int Node::editChild(MBR box, Data* _data)
         {
             delete data[i];
             data[i]=_data;
+            return 0;
         }
     }
     return 1;

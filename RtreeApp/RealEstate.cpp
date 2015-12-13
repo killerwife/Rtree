@@ -40,9 +40,10 @@ RealEstate::RealEstate()
     descTemp[5] = ((char)(rand() % 26) + 'A');
     descTemp[6] = '\0';
     description = descTemp;
-    long originX = _LongRand();
-    long originY = _LongRand();
-    for (int i = 0; i < 4; i++)
+    long originX = rand();
+    long originY = rand();
+    int i;
+    for (i = 0; i < 4; i++)
     {
         coordinates[i].heightPosition = originX + abs(rand()) % 50;
         coordinates[i].widthPosition = originY + abs(rand()) % 50;
@@ -50,25 +51,24 @@ RealEstate::RealEstate()
         coordinates[i].width = abs(rand() % 2) == 0 ? 'V' : 'Z';
     }
     double bottom = DBL_MAX, left = DBL_MAX, top = DBL_MIN, right = DBL_MIN;
-    count = 4;
-    int i;
+    count = 4;    
     for (i = 0; i < count; i++)
     {
-        if (coordinates[i].height > top)
+        if (coordinates[i].heightPosition > top)
         {
-            top = coordinates[i].height;
+            top = coordinates[i].heightPosition;
         }
-        if (coordinates[i].height < bottom)
+        if (coordinates[i].heightPosition < bottom)
         {
-            bottom = coordinates[i].height;
+            bottom = coordinates[i].heightPosition;
         }
-        if (coordinates[i].width > right)
+        if (coordinates[i].widthPosition > right)
         {
-            right = coordinates[i].width;
+            right = coordinates[i].widthPosition;
         }
-        if (coordinates[i].width < left)
+        if (coordinates[i].widthPosition < left)
         {
-            left = coordinates[i].width;
+            left = coordinates[i].widthPosition;
         }
     }
     for (; i < 60; i++)
@@ -180,7 +180,7 @@ void RealEstate::regenerate()
 
 long RealEstate::getSize()
 {
-    return sizeof(long) + sizeof(char) * 80 + (sizeof(double)*2+sizeof(char)*2) * 60+sizeof(double)*2+sizeof(int);
+    return sizeof(long) + sizeof(char) * 80 + (sizeof(double)*2+sizeof(char)*2) * 60+sizeof(double)*4+sizeof(int);
 }
 
 void RealEstate::toByteArray(char* byteArray, long* position)

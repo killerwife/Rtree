@@ -1,7 +1,11 @@
 #include "MBR.h"
 
-
 MBR::MBR()
+{
+
+}
+
+MBR::MBR(int dimension) : bottomLeft(new double[dimension], dimension), topRight(new double[dimension], dimension)
 {
     undefined = true;
 }
@@ -16,16 +20,14 @@ MBR::MBR(char* byteArray, long* position)
     topRight = Point(byteArray, position,dimension);
 }
 
-MBR::MBR(Point _bottomLeft, Point _topRight)
+MBR::MBR(Point _bottomLeft, Point _topRight) : bottomLeft(_bottomLeft), topRight(_topRight)
 {
     undefined = false;
-    bottomLeft = _bottomLeft;
-    topRight = _topRight;
 }
 
 MBR::MBR(const MBR& other)
 {
-    undefined = false;
+    undefined = other.undefined;
     bottomLeft = other.bottomLeft;
     topRight = other.topRight;
 }
@@ -132,7 +134,7 @@ MBR MBR::operator+(const MBR& other)
     if (undefined == true)
     {
         temp.bottomLeft = other.bottomLeft;
-        temp.topRight = other.topRight;
+        temp.topRight = other.topRight;        
     }
     else
     {
@@ -141,6 +143,7 @@ MBR MBR::operator+(const MBR& other)
         temp.bottomLeft = tempBot;
         temp.topRight = tempTop;
     }
+    temp.undefined = false;
     return temp;
 }
 

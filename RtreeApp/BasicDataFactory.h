@@ -6,7 +6,7 @@ class BasicDataFactory :
 {
 public:
     BasicDataFactory();
-    ~BasicDataFactory();
+    virtual ~BasicDataFactory() override;
     virtual Data* getData(char* byteArray, long* position)override;
     virtual long getDataSize()override;
 };

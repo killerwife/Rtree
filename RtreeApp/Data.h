@@ -7,7 +7,7 @@ public:
     std::string name;
     Data();
     Data(char* byteArray,long* position);
-    ~Data();
+    virtual ~Data();
     virtual long getSize();
     virtual void toByteArray(char* byteArray, long* position);
     virtual bool operator==(Data* other);
