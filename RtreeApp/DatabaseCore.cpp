@@ -6,6 +6,11 @@ DatabaseCore::DatabaseCore() : realEstateTree("temp.txt", 10240, new BasicNodeFa
 
 }
 
+DatabaseCore::DatabaseCore(std::string filePath) : realEstateTree(filePath.data(), 10240, new BasicNodeFactory(new RealEstateDataFactory()))
+{
+
+}
+
 
 DatabaseCore::~DatabaseCore()
 {
@@ -30,6 +35,11 @@ int DatabaseCore::deleteRealEstate(RealEstate* input)
 int DatabaseCore::editRealEstate(RealEstate* input,Data* old)
 {    
     return realEstateTree.editNode(input, old);
+}
+
+std::string DatabaseCore::getBlocks()
+{
+    return realEstateTree.sequentialRead();
 }
 
 void DatabaseCore::generate(long long amount)

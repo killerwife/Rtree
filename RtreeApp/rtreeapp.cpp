@@ -9,6 +9,7 @@ RtreeApp::RtreeApp(QWidget *parent)
     connect(ui.actionFind, SIGNAL(triggered()), this, SLOT(handleFindRealEstateForm()));
     connect(ui.actionRemove, SIGNAL(triggered()), this, SLOT(handleRemoveRealEstateForm()));
     connect(ui.actionGenerate, SIGNAL(triggered()), this, SLOT(handleGenerate()));
+    connect(ui.actionBlock_view, SIGNAL(triggered()), this, SLOT(handleBlockView()));
     connect(gpsFormWindow.ui.buttonAddCoordinate, SIGNAL(released()), this, SLOT(handleAddCoordinate()));
     connect(gpsFormWindow.ui.buttonExitCoordinate, SIGNAL(released()), this, SLOT(handleExitCoordinateForm()));
     connect(addFormWindow.ui.buttonAddCoordinate, SIGNAL(released()), this, SLOT(handleOpenCoordinateForm()));
@@ -180,13 +181,15 @@ void RtreeApp::handleFindRealEstate()
         for (int i = 0; i < data.size(); i++)
         {
             output += data[i]->to_string();
+            delete data[i];
         }
         ui.textBrowser->setText(output.data());
         findFormWindow.hide();
     }
     else if (findFormWindow.option == 1)
     {
-        double* first = new double[2], *second = new double[2];
+        double* first = new double[2];
+        double *second = new double[2];
         first[0] = findFormWindow.ui.lineBLX->text().toDouble();
         first[1] = findFormWindow.ui.lineBLY->text().toDouble();
         second[0] = findFormWindow.ui.lineTRX->text().toDouble();
@@ -238,7 +241,7 @@ void RtreeApp::handleFindRealEstate()
         }
         else
         {
-            RealEstate* temp = (RealEstate*)data[i];
+            RealEstate* temp = new RealEstate(*((RealEstate*)data[i]));
             addFormWindow.ui.lineID->setText(std::to_string(temp->ID).data());
             addFormWindow.ui.lineName->setText(temp->name.data());
             addFormWindow.ui.lineDescription->setText(temp->description.data());
@@ -253,8 +256,17 @@ void RtreeApp::handleFindRealEstate()
             gpsFormWindow.count = 0;
             addFormWindow.ui.buttonAdd->setText("Edit");
             addFormWindow.show();
+            for (int i = 0; i < data.size(); i++)
+            {
+                delete data[i];
+            }
         }        
     }
+}
+
+void RtreeApp::handleBlockView()
+{
+    ui.textBrowser->setText(database->getBlocks().data());
 }
 
 void RtreeApp::setDatabase(DatabaseCore* _database)

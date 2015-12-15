@@ -2,18 +2,18 @@
 
 MBR::MBR()
 {
-
+    undefined = 1;
 }
 
 MBR::MBR(int dimension) : bottomLeft(new double[dimension], dimension), topRight(new double[dimension], dimension)
 {
-    undefined = true;
+    undefined = 1;
 }
 
 MBR::MBR(char* byteArray, long* position)
 {
     int dimension;
-    undefined = false;
+    undefined = 0;
     memcpy(&dimension, byteArray + *position, sizeof(int));
     (*position) += sizeof(int);
     bottomLeft = Point(byteArray, position, dimension);
@@ -22,7 +22,7 @@ MBR::MBR(char* byteArray, long* position)
 
 MBR::MBR(Point _bottomLeft, Point _topRight) : bottomLeft(_bottomLeft), topRight(_topRight)
 {
-    undefined = false;
+    undefined = 0;
 }
 
 MBR::MBR(const MBR& other)
@@ -46,13 +46,13 @@ MBR& MBR::operator=(const MBR& other)
 
 std::string MBR::toString(){
     std::string output;
-    output += "Top Left: ";
+    output += "Bottom Left: ";
     for (int i = 0; i < bottomLeft.dimension; i++)
     {
         output += "x" + std::to_string(i) + ":" + std::to_string(bottomLeft.points[i]) + " ";
     }
     output += "\n";
-    output += "Bottom Right: ";
+    output += "Top Right: ";
     for (int i = 0; i < bottomLeft.dimension; i++)
     {
         output += "x" + std::to_string(i) + ":" + std::to_string(topRight.points[i]) + " ";
@@ -130,21 +130,17 @@ bool MBR::operator==(const MBR& other)
 
 MBR MBR::operator+(const MBR& other)
 {
-    MBR temp;
-    if (undefined == true)
+    if (undefined == 1)
     {
-        temp.bottomLeft = other.bottomLeft;
-        temp.topRight = other.topRight;        
+        MBR temp(other);    
+        return temp;
     }
     else
     {
         Point tempBot = bottomLeft.smaller(other.bottomLeft);
         Point tempTop = topRight.bigger(other.topRight);
-        temp.bottomLeft = tempBot;
-        temp.topRight = tempTop;
+        return MBR(tempBot,tempTop);
     }
-    temp.undefined = false;
-    return temp;
 }
 
 long MBR::getSize()

@@ -34,5 +34,6 @@ public:
     void storeSector(long _sector);
     void freeSectors();
     void makeRoot(long location);
+    std::string sequentialRead();
 };
 

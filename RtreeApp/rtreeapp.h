@@ -20,6 +20,7 @@ public:
     void setDatabase(DatabaseCore* _database);
 
     private slots:
+    void handleBlockView();
     void handleAddRealEstateForm();
     void handleEditRealEstateForm();
     void handleFindRealEstateForm();

@@ -3,6 +3,7 @@
 Point::Point()
 {
     points = nullptr;
+    dimension = 2;
 }
 
 Point::Point(char* byteArray, long* position, int _dimension)
@@ -61,11 +62,8 @@ bool Point::operator==(const Point& other)
         {
             return false;
         }
-        else
-        {
-            return true;
-        }
     }
+    return true;
 }
 
 Point Point::smaller(const Point& other)

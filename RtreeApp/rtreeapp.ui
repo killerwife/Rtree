@@ -43,6 +43,7 @@
     <addaction name="actionEdit"/>
     <addaction name="actionFind"/>
     <addaction name="actionGenerate"/>
+    <addaction name="actionBlock_view"/>
    </widget>
    <addaction name="menuActions"/>
   </widget>
@@ -78,6 +79,11 @@
   <action name="actionGenerate">
    <property name="text">
     <string>generate</string>
+   </property>
+  </action>
+  <action name="actionBlock_view">
+   <property name="text">
+    <string>block view</string>
    </property>
   </action>
  </widget>

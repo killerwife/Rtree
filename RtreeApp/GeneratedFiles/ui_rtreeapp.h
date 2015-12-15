@@ -32,6 +32,7 @@ public:
     QAction *actionEdit;
     QAction *actionFind;
     QAction *actionGenerate;
+    QAction *actionBlock_view;
     QWidget *centralWidget;
     QTextBrowser *textBrowser;
     QMenuBar *menuBar;
@@ -54,6 +55,8 @@ public:
         actionFind->setObjectName(QStringLiteral("actionFind"));
         actionGenerate = new QAction(RtreeAppClass);
         actionGenerate->setObjectName(QStringLiteral("actionGenerate"));
+        actionBlock_view = new QAction(RtreeAppClass);
+        actionBlock_view->setObjectName(QStringLiteral("actionBlock_view"));
         centralWidget = new QWidget(RtreeAppClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         textBrowser = new QTextBrowser(centralWidget);
@@ -79,6 +82,7 @@ public:
         menuActions->addAction(actionEdit);
         menuActions->addAction(actionFind);
         menuActions->addAction(actionGenerate);
+        menuActions->addAction(actionBlock_view);
 
         retranslateUi(RtreeAppClass);
 
@@ -93,6 +97,7 @@ public:
         actionEdit->setText(QApplication::translate("RtreeAppClass", "edit", 0));
         actionFind->setText(QApplication::translate("RtreeAppClass", "find", 0));
         actionGenerate->setText(QApplication::translate("RtreeAppClass", "generate", 0));
+        actionBlock_view->setText(QApplication::translate("RtreeAppClass", "block view", 0));
         menuActions->setTitle(QApplication::translate("RtreeAppClass", "actions", 0));
     } // retranslateUi
 

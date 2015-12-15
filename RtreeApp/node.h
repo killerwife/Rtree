@@ -30,11 +30,14 @@ public:
     void makeLeaf();
     int getCount();
     int addChild(MBR box, long pos);
-    int removeChild(MBR box);
+    int removeChild(MBR box, long pos);
     int addChild(Data* _node);
     int removeChild(Data* _node);
     int editChild(MBR box,long pos);
     int editChild(MBR box, Data* _data);
     int getSize();
+    long extractLastChild();
+    Data* Node::extractLastChildLeaf();
+    void recalculate();
 };
 

@@ -89,7 +89,7 @@ RealEstate::RealEstate()
 RealEstate::RealEstate(long _ID, MBR _rectangle)
 {
     ID = _ID;
-    rectangle = rectangle;
+    rectangle = _rectangle;
 }
 
 RealEstate::RealEstate(long _ID, std::string _name,std::string _description, GPS _coordinates[60],int _count)
